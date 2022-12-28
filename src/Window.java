@@ -6,6 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
+/**
+ * Publiczna klasa Window zawierająca wszystkie elementy wyświetlane w oknie aplikacji
+ * oraz główną metodę Window przechowującą ich parametry i ActionListeners.
+ */
+
+
 public class Window extends JFrame implements ActionListener {
 
     int windowWidth=1000;

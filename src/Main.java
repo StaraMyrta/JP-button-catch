@@ -2,6 +2,10 @@ package src;
 
 import javax.swing.*;
 
+/**
+ * Klasa main zawierająca statyczną metodę main wywołującą działanie programu
+ */
+
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

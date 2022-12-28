@@ -6,9 +6,9 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try{
-                Window okno= new Window();
-                okno.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                okno.setVisible(true);
+                Window window= new Window();
+                window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                window.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
             }

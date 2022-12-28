@@ -4,20 +4,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class Window extends JFrame implements ActionListener {
 
     int windowWidth=1000;
     int windowHeight=500;
-    int runningButtonWidth=80, startButtonWidth=100;
-    int runningButtonHeight=80, startButtonHeight=100;
-    int runningButtonX=windowWidth/2-runningButtonWidth/2;
-    int runningButtonY=windowHeight/2-runningButtonHeight/2;
-    int startButtonX=windowWidth/2-startButtonWidth/2;
-    int startButtonY=windowHeight/2-startButtonHeight/2;
+    int runningButtonWidth=80, normalButtonWidth=100;
+    int runningButtonHeight=80, normalButtonHeight=100;
+    int runningButtonX, runningButtonY;
+    int normalButtonX=windowWidth/2-normalButtonWidth/2;
+    int normalButtonY=windowHeight/2-normalButtonHeight/2;
 
-    JButton JStart,runningButton;
-    int isButtonPressed=0;
+    double mouseX,mouseY;
+
+    JButton JStart,JAgain,JEnd,runningButton;
+    JLabel lSuccess;
+
+    URL LGiconURL;
 
     public Window() {
         setSize(windowWidth, windowHeight);
@@ -25,22 +29,55 @@ public class Window extends JFrame implements ActionListener {
         setLayout(null);
         getContentPane().setBackground(new Color(201, 241, 154));
 
-        JStart = new JButton("Zacznij grę!");
-        JStart.setFont(new Font("Dialog", Font.ITALIC, 10));
-        JStart.setBounds(startButtonX,startButtonY,startButtonWidth,startButtonHeight);
-        JStart.setBackground(new Color(100, 100, 100));
-        JStart.setForeground(new Color(195, 195, 195));
+        JStart = new JButton();
+        JStart.setBounds(normalButtonX,normalButtonY,normalButtonWidth,normalButtonHeight);
+        LGiconURL = getClass().getResource("/src/icons/start.png");
+        assert LGiconURL != null : "start button icon not found";
+        JStart.setIcon(new ImageIcon(LGiconURL));
 
-        runningButton = new JButton("Złap mnie!");
-        runningButton.setFont(new Font("Dialog", Font.ITALIC, 10));
-        runningButton.setBounds(runningButtonX,runningButtonY,runningButtonWidth,runningButtonHeight);
-        runningButton.setBackground(new Color(100, 100, 100));
-        runningButton.setForeground(new Color(195, 195, 195));
+        JAgain = new JButton();
+        JAgain.setBounds(normalButtonX,normalButtonY,normalButtonWidth,normalButtonHeight);
+        LGiconURL = getClass().getResource("/src/icons/again.png");
+        assert LGiconURL != null : "again button icon not found";
+        JAgain.setIcon(new ImageIcon(LGiconURL));
 
-        add(JStart);
+        JEnd = new JButton();
+        JEnd.setBounds(normalButtonX,normalButtonY+100,normalButtonWidth,normalButtonHeight);
+        LGiconURL = getClass().getResource("/src/icons/end.png");
+        assert LGiconURL != null : "again button icon not found";
+        JEnd.setIcon(new ImageIcon(LGiconURL));
+
+
+        runningButton = new JButton();
+        LGiconURL = getClass().getResource("/src/icons/runningButton.png");
+        assert LGiconURL != null : "running button icon not found";
+        runningButton.setIcon(new ImageIcon(LGiconURL));
+
+        lSuccess = new JLabel("Przycisk złapany!");
+        lSuccess.setBounds(windowWidth/2-150, windowHeight/2-130, 500, 80);
+        lSuccess.setFont(new Font("Dialog", Font.ITALIC, 40));
 
         runningButton.addActionListener(this);
         JStart.addActionListener(this);
+        JAgain.addActionListener(this);
+        JEnd.addActionListener(this);
+
+        add(JStart);
+    }
+
+    public void Movement(){
+        runningButtonX=(int)(Math.random()*(windowWidth-runningButtonX+1))+runningButtonWidth;
+        runningButtonY=(int)(Math.random()*(windowHeight-runningButtonY+1))+runningButtonHeight;
+
+        runningButton.setBounds(runningButtonX,runningButtonY,runningButtonWidth,runningButtonHeight);
+    }
+
+    public void RunningButtonSetter(){
+        runningButtonX=windowWidth/2-runningButtonWidth/2;
+        runningButtonY=windowHeight/2-runningButtonHeight/2;
+        System.out.println(runningButtonX+"   "+runningButtonY);
+        runningButton.setBounds(runningButtonX,runningButtonY,runningButtonWidth,runningButtonHeight);
+        add(runningButton);
     }
 
     @Override
@@ -52,17 +89,45 @@ public class Window extends JFrame implements ActionListener {
             remove(JStart);
             getContentPane().setBackground(new Color(154, 241, 241));
 
-            add(runningButton);
+            RunningButtonSetter();
         }
 
         if(source==runningButton){
-            System.out.println("pepepe");
-            runningButtonX=(int)(Math.random()*(windowWidth-runningButtonX+1))+1;
-            runningButtonY=(int)(Math.random()*(windowHeight-runningButtonY+1))+1;
-            System.out.println(runningButtonX+" "+runningButtonY);
+            mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+            mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+            System.out.println(mouseX+" "+mouseY);
+            System.out.println(runningButtonX+" "+runningButtonWidth);
+            System.out.println(runningButtonY+" "+runningButtonHeight);
 
-            runningButton.setBounds(runningButtonX,runningButtonY,runningButtonWidth,runningButtonHeight);
+            if(mouseX>=(runningButtonX+runningButtonWidth) && mouseX<=(runningButtonX+runningButtonWidth+10)
+            && mouseY<=(runningButtonY+runningButtonHeight) && mouseY>=runningButtonY){
+                remove(runningButton);
 
+                getContentPane().setBackground(new Color(10,150,80));
+
+                add(lSuccess);
+                add(JAgain);
+                add(JEnd);
+            }
+            else{
+                Movement();
+            }
+        }
+
+        if(source==JAgain){
+            getContentPane().setBackground(new Color(154, 241, 241));
+
+            remove(lSuccess);
+            remove(JAgain);
+            remove(JEnd);
+
+            RunningButtonSetter();
+            add(runningButton);
+        }
+
+        if(source==JEnd) {
+            System.out.println("lolo");
+            super.dispose();
         }
     }
 }
